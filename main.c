@@ -1,11 +1,33 @@
 #include <stdio.h>
 #include <dirent.h>
+#include <unistd.h>
 #include <sys/stat.h>
+#include <errno.h>
+#include <string.h>
 
-int main() {
+int main(int argc, char *argv[]) {
+
+    char path[100];
+
+    if (argc > 1) {
+        strcpy(path, argv[1]);
+    }
+    else {
+        printf("Enter the directory:\n");
+        int res = read(STDIN_FILENO, path, sizeof(path));
+        if (res == -1) {
+            printf("Error %d: %s", errno, strerror(errno));
+        }
+        int path_len = strlen(path);
+        path[path_len - 1] = '\0';
+    }
 
     DIR *d;
-    d = opendir(".");
+    d = opendir(path);
+    if (!d) {
+        printf("Error %d: %s\n", errno, strerror(errno));
+        return -1;
+    }
 
     struct dirent *entry = readdir(d);
     struct stat sb;

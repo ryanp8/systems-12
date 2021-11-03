@@ -9,4 +9,5 @@ run:
 
 clean:
 	rm *.o
-	rm ./program
+	rm program
+	rm a.out
